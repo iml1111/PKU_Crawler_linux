@@ -85,8 +85,9 @@ def content_parse(url):
 	obj = bs0bj.find("td",{"class":"title"})
 	db_record.update({"title":obj.get_text().strip()})
 
-	obj = obj.findNext("td").findNext("td")
-	db_record.update({"date":obj.get_text().strip()})
+	obj = obj.findNext("td").findNext("td").get_text().strip()
+	obj = obj.replace(".","-")
+	db_record.update({"date":obj})
 
 	try:
 		obj = bs0bj.find("td",{"class":"tdc"}).get_text().strip()

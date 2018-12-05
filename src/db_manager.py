@@ -40,6 +40,8 @@ def db_manage(mode, coll_name = None, doc = None, is_first = None):
 				# i 변수가 하나의 게시물
 				# 여기다가 추가하고픈 게시물의 원하는 칼럼 붙여넣으면 됨 
 				# ex) i.update({"추가할 항목":"추가할 값"})
+				i.update({"fav_cnt":0})
+				i.update({"view":0})
 				addok += 1
 				coll.insert(i)
 			else:

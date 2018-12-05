@@ -55,9 +55,11 @@ def list_parse(bs0bj, URL, page, latest_datetime = None):
 	post_list = bs0bj.findAll("tr")
 	domain = URL['url'].split('/')[0] + '//' + URL['url'].split('/')[2]
 
-	for post in post_list[1:]:
+	for post in post_list[:]:
 		db_record = {}
-		
+		post_name = post.find("td",{"class":"gall_num"}).get_text().strip()
+		if  post_name == "이슈" or post_name == "설문" or post_name == "광고":
+			continue
 		try:
 			obj = post.find("a").attrs['href']
 		except Exception as e:

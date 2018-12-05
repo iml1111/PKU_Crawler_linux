@@ -8,10 +8,11 @@ from url_list import List
 from crawl_select import Crawling
 import PK_etc
 import time
+from recent_date import get_today
 
 #for Debug
 target = "PK_univ"
-URL = List[:] 
+URL = List[116:] 
 
 
 if __name__ == '__main__':
@@ -39,4 +40,7 @@ if __name__ == '__main__':
 				print('< URL parsing Renewal >\n' + str(url['url']))
 				Crawling(target, url, False)
 				print('-------------------------------------')
+			time.sleep(60*60)
+			print(get_today())
+			print("waiting....")
 		
