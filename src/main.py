@@ -12,7 +12,7 @@ from recent_date import get_today
 
 #for Debug
 target = "PK_univ"
-URL = List[116:] 
+URL = List[91:] 
 
 
 if __name__ == '__main__':
@@ -40,7 +40,9 @@ if __name__ == '__main__':
 				print('< URL parsing Renewal >\n' + str(url['url']))
 				Crawling(target, url, False)
 				print('-------------------------------------')
-			time.sleep(60*60)
-			print(get_today())
 			print("waiting....")
+			print(get_today())
+			time.sleep(60*60)
+			
+			
 		

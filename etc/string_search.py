@@ -1,5 +1,5 @@
 import pymongo 
-
+import time
 db_name = 'pookle'
 ip = 'localhost'
 port = 27017
@@ -7,7 +7,6 @@ port = 27017
 def Search(db, text):
 	from operator import itemgetter
 	result = []
-	obj_list = []
 	text_list = text.split(" ")
 
 	for element in text_list:
@@ -20,12 +19,13 @@ def Search(db, text):
 													{"tag":{"$elemMatch": {"$regex":element }}},\
 													{"post":{"$regex":element}}\
 													]}))
+
 			for i in coll_list:
-				if i['_id'] in obj_list:
+				if any( i["_id"] == j["_id"] for j in result):
 					for j in result:
 						if j['_id'] == i['_id']:
 							if j['title'].find(element) != -1:
-								j["score"] += 1
+								j["score"] += 2
 							if type(j['post']) is str and j['post'].find(element) != -1:
 								j["score"] += 1
 							for tag in j['tag']:
@@ -34,10 +34,9 @@ def Search(db, text):
 									break
 							j['element'].add(element)
 				else:
-					obj_list.append(i['_id'])
 					i.update({"score":0})
 					if i['title'].find(element) != -1:
-						i["score"] += 1
+						i["score"] += 2
 					if type(i['post']) is str and i['post'].find(element) != -1:
 						i["score"] += 1
 					for tag in i['tag']:
@@ -50,7 +49,7 @@ def Search(db, text):
 	for i in result:
 		i['score'] += len(i['element'])*4
 
-	result = sorted(result, key=itemgetter('score','date'),reverse = True)
+	result = sorted(result, key=itemgetter('score','fav_cnt',"view",'date'),reverse = True)
 	return result
 
 def db_access():
@@ -61,7 +60,11 @@ def db_access():
 if __name__ == '__main__':
 
 	n = input("Search: ")
-	List = Search(db_access(),n)
+	start_time = time.time()
+	db = db_access()
+	List = Search(db,n)
+	end_time = time.time() - start_time
+	# 검색창이공백일때 예외처리
 	print(List)
 	print()
 	if len(List) >= 4:
@@ -70,3 +73,5 @@ if __name__ == '__main__':
 		print(List[1])
 		print(List[2])
 		print(List[3])
+	print(len(List))
+	print(end_time)

@@ -1,0 +1,4 @@
+apt-get install mongodb
+cd / & mkdir data & cd /data & mkdir db
+mongod
+mongo

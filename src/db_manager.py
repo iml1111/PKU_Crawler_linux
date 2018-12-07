@@ -3,7 +3,7 @@ import os
 import datetime
 # 디버깅을 위한 코드, 추후에 전체 수정 필요
 t = datetime.datetime.now()
-filter_list = ["페미","냄져","한남"]
+filter_list = ["페미","냄져","한남","자댕이",'좆팔']
 
 #확장 필요
 db_name = 'pookle'
@@ -31,7 +31,7 @@ def db_manage(mode, coll_name = None, doc = None, is_first = None):
 					break
 
 			for j in filter_list:
-				if i["title"].find(j) != -1:
+				if i["title"].find(j) != -1 or (i["post"] is str and i['post'].find(j) != -1):
 					print("부적합 게시물: ",i['title'])
 					cnt = 1
 					break

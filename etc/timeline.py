@@ -1,125 +1,87 @@
 import pymongo 
 import random
 import datetime
+import time
 
-now = datetime.datetime.now() - datetime.timedelta(days = 90)
+now = datetime.datetime.now() - datetime.timedelta(days = 30)
 date = now.strftime("%Y-%m-%d %H:%M:%S")
 
 db_name = 'pookle'
 ip = 'localhost'
 port = 27017
 
-def View(db, itag, etag):
-	from operator import itemgetter
-	from random import shuffle
-	result = []
-	degree_list = []
-
-	if "공지" in itag:
-		is_main = True
-	else:
-		is_main = False
-
-	for i in itag:
-		if i.endswith("학과") == True or i.endswith("교육과") == True \
-			or i.endswith("학부") == True:
-			degree_list.append(i)
-
-	for col in db.collection_names():
-		if col.startswith("PK_") == False:
-				continue
-		#메인타임라인의 경우 타학과공지 제외
-		if is_main == True:
-			coll_list = list(db[col].find(
-														{"$and":[
-																{"tag":{ "$in": itag }},	
-																{"$or":[
-																	{"$and":[
-																			{"tag": {"$not": {"$elemMatch":{"$regex":"학과$"}}}},
-																			{"tag":{"$not": {"$elemMatch":{"$regex":"학부$"}}}},
-																			{"tag":{"$not": {"$elemMatch":{"$regex":"교육과$"}}}}
-																		]
-																	},
-																	{"tag": {"$in": degree_list}},
-																	]
-																},
-																{"tag":{"$nin":etag }}
-															]
-														}))
-		#서브타임라인의 경우 타학과 게시글 포함
-		else: 
-			coll_list = list(db[col].find(
-														{"$and":[
-																{"tag":{ "$in": itag }},	
-																{"tag":{"$nin":etag }}
-															]
-														}))
-		#3달이내의 글만 갖고옴
-		for i in coll_list:
-			if i['date'] >= date:
-				result.append(i)
-
-	#fav_list = sorted(result, key=itemgetter("fav_cnt","view","date"), reverse = True)
-	fav_list = sorted(result, key=itemgetter("date"), reverse = True)
-	#if fav_list[0]['fav_cnt'] == 0 and fav_list[0]['view'] == 0:
-	#	shuffle(fav_list)
-	for q in range(5): shuffle(result)
-	normal_list = result
-	
-
-	fav_line = 0
-	normal_line = 0
-	result = []
-
-	if len(fav_list) >= 300:
-		rng = 300
-	else:
-		rng = len(fav_list)
-	for i in range(rng):
-
-		if (i % 3 == 0  or normal_line >= len(normal_list)) and  fav_line < len(fav_list):
-			post = fav_list[fav_line]
-			fav_line += 1
-		elif (i % 3 != 0 or fav_line >= len(fav_list))  and normal_line < len(normal_list): 
-			post = normal_list[normal_line]
-			normal_line += 1
-		
-		is_dedup = False
-		for j in result:
-			if post['_id'] == j['_id']:
-				is_dedup = True
-				break
-		if is_dedup == True:
-			continue
-		else:
-			result.append(post)
-	return result
-
 def db_access():
 	client = pymongo.MongoClient(ip,port)
 	db = client[db_name]
 	return db
 
+def View(db, icoll, itag, ltag, etag):
+	from operator import itemgetter
+	from random import shuffle
+	result = []
+
+	for col in db.collection_names():
+		# 메인타임라인의 기본 콜렉션
+		if any(icol in col for icol in icoll):
+			coll_list = list(db[col].find(
+														{"$and":[
+																{"tag":{ "$in": itag + ltag }},	
+																{"tag":{"$nin":etag }},
+																{"date":{"$gt":date}}
+															]
+														}))
+		#기본 콜렉션 외의 로그인 태그 게시글 여부
+		else:
+			coll_list = list(db[col].find(
+														{"$and":[
+																{"tag":{ "$in":ltag }},	
+																{"tag":{"$nin":etag }},
+																{"date":{"$gt":date}}
+															]
+														}))
+		result += coll_list
+	for post in result:
+		if any(tag in ltag for tag in post['tag']):
+			post.update({"priority":True})
+		else:
+			post.update({"priority":False})
+
+	fav_list = sorted(result, key=itemgetter("priority","fav_cnt","view","date"), reverse = True)
+	shuffle(result)
+	fav_cnt = 0
+
+	for i in range(len(result)):
+		if i >= 240 or fav_cnt >= 80:
+			break
+		if random.randrange(100) <= 40 \
+		and any(fav_list[fav_cnt] == j["_id"] for j in result[0:i]) == False:
+			result.insert(i, fav_list[fav_cnt])
+			fav_cnt += 1
+		
+	return result
+
+
 if __name__ == '__main__':
 
-	include_tag = [
-	#메인
-	["기타","공지","거래","대나무숲","반짝정원","지식인","장학"],
-	#진로
-	["창업지원단","취업","창업","진로"],
-	#스터디&모임
-	['스터디&모임',"특강","세미나","봉사","동아리"],
-	#알바&구인
-	["조교","과외&강사","알바&구인"],
-	#행사&대외활동
-	["행사","봉사","공모전&대외활동","교육&설명회","멘토링"],
-	]
+	include_coll =["PK_main_notice","PK_main_free","PK_main_openmarket",
+	"PK_main_boarding","PK_main_lost","PK_main_car","PK_pknu_bamboo",
+	"PK_pknu_public","PK_pknu_lost","PK_pknu_free","PK_pknu_twinkle",
+	"PK_pknu_kin","PK_today_today","PK_pknulogin_market",
+	"PK_dorm_notice","PK_dcinside_free", "PK_sh_notice","PK_start_notice"]
+	include_tag = ["기타","공지","거래","대나무숲","반짝정원","지식인","장학"]
+	login_tag = ["컴퓨터공학과","영어"]
 	exclude_tag = []
 	
-	List =View(db_access(),include_tag[0], exclude_tag)
+
+	start_time = time.time()
+	db = db_access()
+	List =View(db, include_coll, include_tag, login_tag, exclude_tag)
+	end_time = time.time() - start_time
+
 	for i in range(10):
 		print(List[i]['title'])
 		print(List[i]['tag'])
 		print(List[i]['date'])
-		print()
+		print(List[i]['fav_cnt'])
 	print(len(List))
+	print(end_time)
