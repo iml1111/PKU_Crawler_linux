@@ -12,7 +12,7 @@ from recent_date import get_today
 
 #for Debug
 target = "PK_univ"
-URL = List[91:] 
+URL = List[:] 
 
 
 if __name__ == '__main__':
