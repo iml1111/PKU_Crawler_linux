@@ -36,18 +36,17 @@ def View(db, icoll, itag, etag):
 
 	fav_list = sorted(result, key=itemgetter("fav_cnt","view","date"), reverse = True)
 	shuffle(result)
+	fav_cnt = 0
 
-	if len(fav_list) >= 80:
-		post_len = 80
-	else:
-		post_len = len(fav_list)
-
-	for i in range(post_len):
-		if len(result) <= (i*3):
+	for i in range(len(result)):
+		if i >= 240 or fav_cnt >= 80:
 			break
-		if any(fav_list[i] == j["_id"] for j in result[0:i*3 + 2]) == False:
-			result.insert(i*3 + 2, fav_list[i])
-		
+		if random.randrange(100) <= 40 \
+		and any(fav_list[fav_cnt] == j["_id"] for j in result[0:i]) == False:
+			result.insert(i, fav_list[fav_cnt])
+			fav_cnt += 1
+		elif any(result[i]["_id"] == j["_id"] for j in result[0:i]):
+			del result[i]
 	return result
 
 
@@ -90,7 +89,7 @@ if __name__ == '__main__':
 
 	start_time = time.time()
 	db = db_access()
-	List =View(db, include_coll[0], include_tag[0], exclude_tag)
+	List =View(db, include_coll[4], include_tag[4], exclude_tag)
 	end_time = time.time() - start_time
 
 	for i in range(10):

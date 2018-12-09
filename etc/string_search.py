@@ -9,6 +9,9 @@ def Search(db, text):
 	result = []
 	text_list = text.split(" ")
 
+	if any(len(element) <= 1 for element in text_list):
+		return None
+
 	for element in text_list:
 
 		for col in db.collection_names():
@@ -65,13 +68,17 @@ if __name__ == '__main__':
 	List = Search(db,n)
 	end_time = time.time() - start_time
 	# 검색창이공백일때 예외처리
-	print(List)
-	print()
-	if len(List) >= 4:
-		print("This is Top4")
-		print(List[0])
-		print(List[1])
-		print(List[2])
-		print(List[3])
-	print(len(List))
-	print(end_time)
+	# 검색어는 무조건 2글자 이상의 단어가 포함되야 함
+	if(List != None):
+		print(List)
+		print()
+		if len(List) >= 4:
+			print("This is Top4")
+			print(List[0])
+			print(List[1])
+			print(List[2])
+			print(List[3])
+		print(len(List))
+		print(end_time)
+	else:
+		print("2글자 이상의 단어로만 이루어져야 합니다")

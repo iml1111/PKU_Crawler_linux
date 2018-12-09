@@ -57,6 +57,9 @@ def View(db, icoll, itag, ltag, etag):
 		and any(fav_list[fav_cnt] == j["_id"] for j in result[0:i]) == False:
 			result.insert(i, fav_list[fav_cnt])
 			fav_cnt += 1
+		elif any(result[i]["_id"] == j["_id"] for j in result[0:i]):
+			del result[i]
+
 		
 	return result
 
