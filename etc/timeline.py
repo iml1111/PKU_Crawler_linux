@@ -53,7 +53,7 @@ def View(db, icoll, itag, ltag, etag):
 	for i in range(len(result)):
 		if i >= 240 or fav_cnt >= 80:
 			break
-		if randrange(100) <= 40 \
+		if randrange(100) <= 80 \
 		and any(fav_list[fav_cnt] == j["_id"] for j in result[0:i]) == False:
 			result.insert(i, fav_list[fav_cnt])
 			fav_cnt += 1
@@ -73,7 +73,7 @@ if __name__ == '__main__':
 	"PK_pknu_kin","PK_today_today","PK_pknulogin_market",
 	"PK_dorm_notice","PK_dcinside_free", "PK_sh_notice","PK_start_notice"]
 	include_tag = ["기타","공지","거래","대나무숲","반짝정원","지식인","장학"]
-	priority_tag = []
+	priority_tag = ["교육&설명회","모집","수강","진로","행사","취업","공모전&대외활동"]
 	exclude_tag = []
 	
 
