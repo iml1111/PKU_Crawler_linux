@@ -1,9 +1,9 @@
 import pymongo 
-import random
 import datetime
-import time
+from operator import itemgetter
+from random import shuffle, randrange
 
-now = datetime.datetime.now() - datetime.timedelta(days = 30)
+now = datetime.datetime.now() - datetime.timedelta(days = 15)
 date = now.strftime("%Y-%m-%d %H:%M:%S")
 
 db_name = 'pookle'
@@ -16,8 +16,7 @@ def db_access():
 	return db
 
 def View(db, icoll, itag, etag):
-	from operator import itemgetter
-	from random import shuffle
+	
 	result = []
 
 	for col in db.collection_names():
@@ -41,7 +40,7 @@ def View(db, icoll, itag, etag):
 	for i in range(len(result)):
 		if i >= 240 or fav_cnt >= 80:
 			break
-		if random.randrange(100) <= 40 \
+		if randrange(100) <= 40 \
 		and any(fav_list[fav_cnt] == j["_id"] for j in result[0:i]) == False:
 			result.insert(i, fav_list[fav_cnt])
 			fav_cnt += 1
@@ -51,6 +50,7 @@ def View(db, icoll, itag, etag):
 
 
 if __name__ == '__main__':
+	import time
 
 	include_coll = [
 	#메인
@@ -89,7 +89,7 @@ if __name__ == '__main__':
 
 	start_time = time.time()
 	db = db_access()
-	List =View(db, include_coll[4], include_tag[4], exclude_tag)
+	List =View(db, include_coll[1], include_tag[1], exclude_tag)
 	end_time = time.time() - start_time
 
 	for i in range(10):

@@ -2,7 +2,7 @@ from url_parser import URLparser
 from bs4 import BeautifulSoup
 from db_manager import db_manage
 from tag import tagging
-from recent_date import get_today
+from recent_date import get_default_day
 from recent_date import get_recent_date
 
 def parsing(driver, URL, is_first):
@@ -43,7 +43,7 @@ def parsing(driver, URL, is_first):
 
 
 def list_parse(bs0bj, URL, page):
-	today = get_today()
+	today = get_default_day(30)
 	db_docs = []
 	post_list = bs0bj.findAll("li")
 	domain = URL['url'].split('/')[0] + '//' + URL['url'].split('/')[2]

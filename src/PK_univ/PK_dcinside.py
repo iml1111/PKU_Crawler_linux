@@ -16,6 +16,9 @@ def parsing(driver, URL, is_first):
 	while True:
 		print('this page is\t| '+ URL['info'] + ' |\t' + str(page))
 		bs0bj = BeautifulSoup(driver.read(), "lxml")
+		if bs0bj == None:
+			driver = URLparser(URL['url'] + "&page=" + str(page))
+			bs0bj = BeautifulSoup(driver.read(), "lxml")
 		bs0bj = bs0bj.find("table",{"class":"gall_list"}).find("tbody")
 
 		# first 크롤링일 경우 그냥 진행
@@ -92,7 +95,7 @@ def content_parse(url):
 		print("connect error")
 		bs0bj = BeautifulSoup(html.read(), "lxml")
 
-	bs0bj = bs0bj.find("div",{"class":"view_content_wrap"})
+	#bs0bj = bs0bj.find("div",{"class":"view_content_wrap"})
 	db_record = {}
 	db_record.update({"url":url})
 

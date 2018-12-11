@@ -1,6 +1,7 @@
 import pymongo 
 import os
 import datetime
+from recent_date import get_default_day
 # 디버깅을 위한 코드, 추후에 전체 수정 필요
 t = datetime.datetime.now()
 filter_list = ["페미","냄져","한남","자댕이",'좆팔']
@@ -59,6 +60,15 @@ def db_manage(mode, coll_name = None, doc = None, is_first = None):
 
 	elif mode == "get_recent":
 		return db['recent_date'].find_one({"name":coll_name})
+
+
+	elif mode =="old_remove":
+		day = get_default_day(365)
+
+		for col in db.collection_names():
+			if col.startswith("PK_") \
+			and col != "PK_etc" and col != "PK_pknu_lecture":
+				db[col].remove({"date":{"$lt":day}})
 
 
 def db_access():

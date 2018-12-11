@@ -8,6 +8,7 @@ from url_list import List
 from crawl_select import Crawling
 import PK_etc
 import time
+from db_manager import db_manage
 from recent_date import get_today
 
 #for Debug
@@ -42,6 +43,7 @@ if __name__ == '__main__':
 				print('-------------------------------------')
 			print("waiting....")
 			print(get_today())
+			db_manage("old_remove")
 			time.sleep(60*60)
 			
 			

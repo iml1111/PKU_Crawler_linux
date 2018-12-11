@@ -413,6 +413,9 @@ def tag_public(url, title, tag_list):
 	or title.find("모임") != -1:
 		tag_list.append("스터디&모임")
 
+	if title.find("컴공") != -1:
+		tag_list.append("컴퓨터공학과")
+
 
 
 #### 부경대 컴퓨터공학과 홈페이지

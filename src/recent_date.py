@@ -19,3 +19,11 @@ def get_today():
 	date = now.strftime("%Y-%m-%d %H:%M:%S")
 
 	return date
+
+def get_default_day(day):
+	import datetime
+
+	now = datetime.datetime.now() - datetime.timedelta(days = day)
+	date = now.strftime("%Y-%m-%d %H:%M:%S")
+
+	return date
