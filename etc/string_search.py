@@ -14,6 +14,9 @@ def Search(db, text):
 
 	for element in text_list:
 
+		if len(element) < 2:
+			continue
+
 		for col in db.collection_names():
 			if col.startswith("PK_") == False:
 				continue

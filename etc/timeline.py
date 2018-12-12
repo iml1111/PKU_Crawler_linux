@@ -3,7 +3,7 @@ import datetime
 from operator import itemgetter
 from random import shuffle, randrange
 
-now = datetime.datetime.now() - datetime.timedelta(days = 7)
+now = datetime.datetime.now() - datetime.timedelta(days = 14)
 date = now.strftime("%Y-%m-%d %H:%M:%S")
 
 db_name = 'pookle'
@@ -40,6 +40,7 @@ def View(db, icoll, itag, ltag, etag):
 															]
 														}))
 		result += coll_list
+
 	for post in result:
 		if any(tag in ltag for tag in post['tag']):
 			post.update({"priority":True})
@@ -51,15 +52,29 @@ def View(db, icoll, itag, ltag, etag):
 	fav_cnt = 0
 
 	for i in range(len(result)):
-		if i >= 240 or fav_cnt >= 80:
+		if i >= 240 or fav_cnt >= 80 or i >= len(result):
 			break
-		if randrange(100) <= 80 \
+		if randrange(100) <= 60 \
 		and any(fav_list[fav_cnt] == j["_id"] for j in result[0:i]) == False:
 			result.insert(i, fav_list[fav_cnt])
 			fav_cnt += 1
 		elif any(result[i]["_id"] == j["_id"] for j in result[0:i]):
 			del result[i]
-
+	#관심 태그가 아예 없을 때
+	if len(ltag) == 0:
+		for i in range(len(result)-4):
+			if i >= len(result)-4:
+				break
+			while(i < len(result)-3 and "디시인사이드" in result[i]['tag'] and\
+			"디시인사이드" in result[i + 1]['tag'] and\
+			"디시인사이드" in result[i + 2]['tag']):
+				delete_list = sorted(result[i:i+3],key=itemgetter("fav_cnt","view","date"))
+				if delete_list[0]['title'] == result[i]['title']:
+					del result[i]
+				elif delete_list[0]['title'] == result[i+1]['title']:
+					del result[i+1]
+				elif delete_list[0]['title'] == result[i+2]['title']:
+					del result[i+2]
 		
 	return result
 
@@ -73,7 +88,8 @@ if __name__ == '__main__':
 	"PK_pknu_kin","PK_today_today","PK_pknulogin_market",
 	"PK_dorm_notice","PK_dcinside_free", "PK_sh_notice","PK_start_notice"]
 	include_tag = ["기타","공지","거래","대나무숲","반짝정원","지식인","장학"]
-	priority_tag = ["교육&설명회","모집","수강","진로","행사","취업","공모전&대외활동"]
+	priority_tag = []
+	#"컴퓨터공학과","취업","영어","대나무숲"
 	exclude_tag = []
 	
 
@@ -87,5 +103,5 @@ if __name__ == '__main__':
 		print(List[i]['tag'])
 		print(List[i]['date'])
 		print(List[i]['fav_cnt'])
-	print(len(List))
-	print(end_time)
+	print("총 게시글 수:",len(List))
+	print("소요시간:",end_time)
