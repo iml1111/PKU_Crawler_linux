@@ -24,15 +24,13 @@ if __name__ == '__main__':
 
 	start_error_logging()
 
-	while(True):
-		print('\n\nRenewal Crawling Start...\n\n')
-		for url in URL:
-			print('< URL parsing Renewal >\n' + str(url['url']))
-			Crawling(target, url, False)
-			print('-------------------------------------')
-		print("waiting....")
-		print(get_today())
-		db_manage("old_remove")
-		time.sleep(60*60)
+	print('\n\nRenewal Crawling Start...\n\n')
+	for url in URL:
+		print('< URL parsing Renewal >\n' + str(url['url']))
+		Crawling(target, url, False)
+	print('-------------------------------------')
+	print(get_today())
+	db_manage("old_remove")
+
 			
 		
