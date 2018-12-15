@@ -1,0 +1,24 @@
+server
+
+pip install uwsgi
+
+or 
+
+$ apt-get install uwsgi
+$ apt-get install uwsgi-plugin-python3
+
+uwsgi.ini 준비
+
+apt-get install nginx
+
+my_nginx.conf 준비
+
+/etc/nginx/sites-enabled/ 에 링크 혹은 복사
+sudo /etc/init.d/nginx restart
+
+db
+
+apt-get install mongodb
+cd / & mkdir data & cd /data & mkdir db
+mongod
+mongo
