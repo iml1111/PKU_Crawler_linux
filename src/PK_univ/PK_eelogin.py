@@ -4,6 +4,7 @@ from db_manager import db_manage
 from PK_global import startdate_dict
 from tag import tagging
 from recent_date import get_recent_date
+from elog import error_logging
 
 def parsing(driver, URL, is_first):
 	if is_first == False:
@@ -12,8 +13,12 @@ def parsing(driver, URL, is_first):
 	page = 1
 	while True:
 		print('this page is\t| '+ URL['info'] + ' |\t' + str(page))
-		bs0bj = BeautifulSoup(driver.read(), "html.parser")
-		bs0bj = bs0bj.find("td",{"class":"text12graylight"}).find('td',{"valign":"top"}).find("table")
+		try:
+			bs0bj = BeautifulSoup(driver.read(), "html.parser")
+			bs0bj = bs0bj.find("td",{"class":"text12graylight"}).find('td',{"valign":"top"}).find("table")
+		except:
+			error_logging(URL['info'], "[2.1] Page crawling fail")
+			break
 		# first 크롤링일 경우 그냥 진행
 		if is_first == True:
 			db_docs = list_parse(bs0bj, URL, page)
@@ -35,7 +40,9 @@ def parsing(driver, URL, is_first):
 				break
 			page += 1
 			driver = URLparser(URL['url'] + "&page=" + str(page))
-			print(URL['url'] + "&page=" + str(page - 1))
+			if driver == None: 
+				error_logging(URL['info'], "[2.2] Page crawling fail")
+				break
 
 	# 최근 날짜가 갱신되었다면 db에도 갱신
 	if recent_date != None:
@@ -47,14 +54,21 @@ def list_parse(bs0bj, URL, page, latest_datetime = None):
 	target = URL['info'].split('_')[1]
 	start_datetime = startdate_dict[target]
 	db_docs = []
-	post_list = bs0bj.findAll("td",{"height":"29"})
+	try:
+		post_list = bs0bj.findAll("td",{"height":"29"})
+	except:
+		error_logging(URL['info'], "[3] Post crawling fail")
+		return db_docs
+
 	domain = URL['url'].split('/')[0] + '//' + URL['url'].split('/')[2] + '/'\
 	 + URL['url'].split('/')[3] + '/' + URL['url'].split('/')[4] + '/'
 
 	for post in post_list:
 		db_record = {}
-
-		obj = post.find("a",{"class":"text12graylightlink"})
+		try:
+			obj = post.find("a",{"class":"text12graylightlink"})
+		except:
+			continue
 		db_record.update({"url": domain+ obj.attrs['href']})
 		db_record.update({"title":obj.get_text().strip()})
 

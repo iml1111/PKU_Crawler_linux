@@ -5,7 +5,7 @@ from recent_date import get_default_day
 # 디버깅을 위한 코드, 추후에 전체 수정 필요
 t = datetime.datetime.now()
 filter_list = ["페미","냄져","한남","자댕이",'좆팔',"씨발",'섹스','개년','개새끼',
-'씹새끼','셋스']
+'씹새끼','셋스','느개비']
 
 #확장 필요
 db_name = 'pookle'

@@ -10,6 +10,7 @@ import PK_etc
 import time
 from db_manager import db_manage
 from recent_date import get_today
+from elog import start_error_logging
 
 #for Debug
 target = "PK_univ"
@@ -21,30 +22,16 @@ if __name__ == '__main__':
 	print('First Crawling Start!')
 	print('target: ' + target)
 
-	mode = input("mode Select: ")
-	
-# Start mode
-	if mode == "1":
+	start_error_logging()
 
-		for url in URL:
-			print('< URL parsing Start! >\n' + str(url['url']))
-			Crawling(target, url, True)
-			print('-------------------------------------')
+	for url in URL:
+		print('< URL parsing Start! >\n' + str(url['url']))
+		Crawling(target, url, True)
+		print('-------------------------------------')
 
-		PK_etc.crawling()
+	PK_etc.crawling()
 
-# Renewal mode
-	else:
-		while(True):
-			print('\n\nRenewal Crawling Start...\n\n')
-			for url in URL:
-				print('< URL parsing Renewal >\n' + str(url['url']))
-				Crawling(target, url, False)
-				print('-------------------------------------')
-			print("waiting....")
-			print(get_today())
-			db_manage("old_remove")
-			time.sleep(60*60)
+
 			
 			
 		

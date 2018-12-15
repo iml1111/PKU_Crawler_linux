@@ -12,7 +12,7 @@ def URLparser(URL):
 	try:
 		html = AppURLopener().open(URL)
 	except:
-		time.sleep(1)
+		time.sleep(3)
 		print("Connection Error")
 		try:
 			html = AppURLopener().open(URL)

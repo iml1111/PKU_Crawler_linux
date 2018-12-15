@@ -6,6 +6,40 @@ from random import shuffle, randrange
 now = datetime.datetime.now() - datetime.timedelta(days = 15)
 date = now.strftime("%Y-%m-%d %H:%M:%S")
 
+include_coll = [
+	#메인
+	["PK_main_notice","PK_main_free","PK_main_openmarket","PK_main_boarding",
+	"PK_main_lost","PK_main_car","PK_pknu_bamboo","PK_pknu_public","PK_pknu_lost",
+	"PK_pknu_free","PK_pknu_twinkle","PK_pknu_kin","PK_today_today",
+	"PK_pknulogin_market","PK_dorm_notice","PK_dcinside_free", "PK_sh_notice",\
+	"PK_start_notice"],
+	#진로
+	["PK_job","_jobinfo","_samsungsw","PK_start","_notice","PK_main_free",
+	"PK_duem_free",'PK_industrial_free',"PK_ee_free","PK_mae_free"],
+	#스터디&모임
+	['PK_main_circle',"PK_pknu_moim","PK_main_volunteer","_notice","_public",
+	"PK_main_free","PK_duem_free",'PK_industrial_free',"PK_ee_free","PK_mae_free"],
+	#알바&구인
+	["_parttimejob","_public","_notice","_circle","PK_main_free"],
+	#행사&대외활동
+	["PK_main_free","PK_duem_free",'PK_industrial_free',"PK_ee_free",
+	"PK_mae_free","_competition","PK_job_education","_notice",
+	"PK_start_free"]
+	]
+include_tag = [
+	#메인
+	["기타","공지","거래","대나무숲","반짝정원","지식인","장학"],
+	#진로
+	["창업지원단","취업","창업","진로"],
+	#스터디&모임
+	['스터디&모임',"특강","세미나","봉사","동아리"],
+	#알바&구인
+	["조교","과외&강사","알바&구인"],
+	#행사&대외활동
+	["행사","봉사","공모전&대외활동","교육&설명회","멘토링"],
+	]
+exclude_tag = []
+
 db_name = 'pookle'
 ip = 'localhost'
 port = 27017
@@ -51,41 +85,6 @@ def View(db, icoll, itag, etag):
 
 if __name__ == '__main__':
 	import time
-
-	include_coll = [
-	#메인
-	["PK_main_notice","PK_main_free","PK_main_openmarket","PK_main_boarding",
-	"PK_main_lost","PK_main_car","PK_pknu_bamboo","PK_pknu_public","PK_pknu_lost",
-	"PK_pknu_free","PK_pknu_twinkle","PK_pknu_kin","PK_today_today",
-	"PK_pknulogin_market","PK_dorm_notice","PK_dcinside_free", "PK_sh_notice",\
-	"PK_start_notice"],
-	#진로
-	["PK_job","_jobinfo","_samsungsw","PK_start","_notice","PK_main_free",
-	"PK_duem_free",'PK_industrial_free',"PK_ee_free","PK_mae_free"],
-	#스터디&모임
-	['PK_main_circle',"PK_pknu_moim","PK_main_volunteer","_notice","_public",
-	"PK_main_free","PK_duem_free",'PK_industrial_free',"PK_ee_free","PK_mae_free"],
-	#알바&구인
-	["_parttimejob","_public","_notice","_circle","PK_main_free"],
-	#행사&대외활동
-	["PK_main_free","PK_duem_free",'PK_industrial_free',"PK_ee_free",
-	"PK_mae_free","_competition","PK_job_education","_notice",
-	"PK_start_free"]
-	]
-	include_tag = [
-	#메인
-	["기타","공지","거래","대나무숲","반짝정원","지식인","장학"],
-	#진로
-	["창업지원단","취업","창업","진로"],
-	#스터디&모임
-	['스터디&모임',"특강","세미나","봉사","동아리"],
-	#알바&구인
-	["조교","과외&강사","알바&구인"],
-	#행사&대외활동
-	["행사","봉사","공모전&대외활동","교육&설명회","멘토링"],
-	]
-	exclude_tag = []
-	
 
 	start_time = time.time()
 	db = db_access()

@@ -4,6 +4,7 @@ from db_manager import db_manage
 from tag import tagging
 from recent_date import get_recent_date
 from recent_date import get_today
+from elog import error_logging
 
 def parsing(driver, URL, is_first):
 	if is_first == False:
@@ -12,8 +13,12 @@ def parsing(driver, URL, is_first):
 	page = 1
 	while True:
 		print('this page is\t| '+ URL['info'] + ' |\t' + str(page))
-		bs0bj = BeautifulSoup(driver.read(), "html.parser")
-		bs0bj = bs0bj.find("ul",{"class":"list-body"})
+		try:
+			bs0bj = BeautifulSoup(driver.read(), "html.parser")
+			bs0bj = bs0bj.find("ul",{"class":"list-body"})
+		except:
+			error_logging(URL['info'], "[2.1] Page crawling fail")
+			break
 
 		# first 크롤링일 경우 그냥 진행
 		if is_first == True:
@@ -37,6 +42,9 @@ def parsing(driver, URL, is_first):
 				break
 			page += 1
 			driver = URLparser(URL['url'] + "&page=" + str(page))
+			if driver == None: 
+				error_logging(URL['info'], "[2.2] Page crawling fail")
+				break
 
 	# 최근 날짜가 갱신되었다면 db에도 갱신
 	if recent_date != None:
@@ -47,7 +55,11 @@ def parsing(driver, URL, is_first):
 def list_parse(bs0bj, URL, page, lastet_datetime = None):
 	today = get_today()
 	db_docs = []
-	post_list = bs0bj.findAll("li")
+	try:
+		post_list = bs0bj.findAll("li")
+	except:
+		error_logging(URL['info'], "[3] Post crawling fail")
+		return db_docs
 	domain = URL['url'].split('/')[0] + '//' + URL['url'].split('/')[2]
 
 	#게시글 파싱 및 크롤링
@@ -55,16 +67,19 @@ def list_parse(bs0bj, URL, page, lastet_datetime = None):
 		db_record = {}
 
 		title = ""
-		obj = post.find("div",{"class":"wr-subject"})
-		title += " " + obj.find("a").get_text().strip()
-		if title.split(" ")[1] == '[알림]':
+		try:
+			obj = post.find("div",{"class":"wr-subject"})
+			title += " " + obj.find("a").get_text().strip()
+			if title.split(" ")[1] == '[알림]':
+				continue
+			print(title)
+			db_record.update({"url":obj.find("a").attrs["href"]})
+			db_record.update({"title":title})
+			db_record.update({"post":0})
+			db_record.update({"date":today})
+			db_record.update(tagging(URL, db_record['title']))
+		except:
 			continue
-		print(title)
-		db_record.update({"url":obj.find("a").attrs["href"]})
-		db_record.update({"title":title})
-		db_record.update({"post":0})
-		db_record.update({"date":today})
-		db_record.update(tagging(URL, db_record['title']))
 
 		print(db_record['title'])
 

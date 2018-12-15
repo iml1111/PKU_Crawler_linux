@@ -1,5 +1,6 @@
 from bs4 import BeautifulSoup
 from url_parser import URLparser
+from elog import error_logging
 # 부경대 공지사항 목록
 import PK_main 
 import PK_ce
@@ -40,6 +41,7 @@ def Crawling(target, URL, is_first):
 		return
 
 	if driver == None:
+		error_logging(URL['info'], " [1] Post page access fail")
 		return
 
 	if target == 'PK_univ':

@@ -5,6 +5,7 @@ from PK_global import startdate_dict
 from tag import tagging
 from post_wash import post_wash
 from recent_date import get_recent_date
+from elog import error_logging
 
 
 def parsing(driver, URL, is_first):
@@ -14,8 +15,12 @@ def parsing(driver, URL, is_first):
 	page = 1
 	while True:
 		print('this page is\t| '+ URL['info'] + ' |\t' + str(page))
-		bs0bj = BeautifulSoup(driver.read(), "html.parser")
-		bs0bj = bs0bj.find("ul",{"class":"list-body"})
+		try:
+			bs0bj = BeautifulSoup(driver.read(), "html.parser")
+			bs0bj = bs0bj.find("ul",{"class":"list-body"})
+		except:
+			error_logging(URL['info'], "[2.1] Page crawling fail")
+			break
 
 		# first 크롤링일 경우 그냥 진행
 		if is_first == True:
@@ -34,11 +39,14 @@ def parsing(driver, URL, is_first):
 			break
 		else:
 			addok = db_manage("add", URL['info'], db_docs)
+			print("addOK : " + str(addok))
 			if addok == 0:
 				break
 			page += 1
 			driver = URLparser(URL['url'] + "&page=" + str(page))
-			print(URL['url'] + "&page=" + str(page))
+			if driver == None: 
+				error_logging(URL['info'], "[2.2] Page crawling fail")
+				break
 			
 	# 최근 날짜가 갱신되었다면 db에도 갱신
 	if recent_date != None:
@@ -50,21 +58,30 @@ def list_parse(bs0bj, URL, page, lastet_datetime = None):
 	target = URL['info'].split('_')[1]
 	start_datetime = startdate_dict[target]
 	db_docs = []
-	post_list = bs0bj.findAll("li")
+	try:
+		post_list = bs0bj.findAll("li")
+	except:
+		error_logging(URL['info'], "[3] Post crawling fail")
+		return db_docs
 	domain = URL['url'].split('/')[0] + '//' + URL['url'].split('/')[2]
 
 	#게시글 파싱 및 크롤링
 	for post in post_list:
 		# 1 페이지에만 나타나는 공지글 스킵
-		if post.find("span",{"class":"wr-icon wr-notice"}) != None:
+		try:
+			if post.find("span",{"class":"wr-icon wr-notice"}) != None:
+				continue
+		except:
 			continue
 		db_record = {}
 		try:
 			obj = post.find("div",{"class":"wr-subject"}).find("a").attrs["href"]
 		except Exception as e:
 			return db_docs
-
-		db_record.update(content_parse(domain, obj))
+		db_rec = content_parse(domain, obj)
+		if db_rec == None:
+			continue
+		db_record.update(db_rec)
 		if "class" in db_record.keys():
 			db_record.update(tagging(URL, db_record['title'] + db_record['class']))
 		else:
@@ -87,28 +104,39 @@ def list_parse(bs0bj, URL, page, lastet_datetime = None):
 
 def content_parse(domain, url):
 	html = URLparser(url)
-	bs0bj = BeautifulSoup(html.read(), "html.parser")
-	bs0bj = bs0bj.find("div",{"class":"view-wrap"})\
-					.find("article",{"itemprop":"articleBody"})
+	if html == None:
+		error_logging(url, "[3.1] Post crawling fail")
+		return None
+	try:
+		bs0bj = BeautifulSoup(html.read(), "html.parser")
+	except:
+		error_logging(url, "[3.2] Post crawling fail")
+		return None
 
 	db_record = {}
 	db_record.update({"url":url})
-
-	obj = bs0bj.find("h1",{"itemprop":"headline"})
-	db_record.update({"title": obj.get_text().strip()})
-
-	if bs0bj.find("span",{"class":"hidden-xs"}) != None:
-		obj = bs0bj.find("span",{"class":"hidden-xs"})
-		if obj.get_text().strip() != "":
-			db_record.update({"class":obj.get_text().strip()})
-
-	obj = bs0bj.find("span",{"itemprop":"datePublished"})
-	date = obj.attrs["content"].split("KST")[0] + " " + obj.attrs["content"].split("KST")[1]
-	db_record.update({"date": date})
-
 	try:
-		obj = bs0bj.find("div",{"itemprop":"description"})
-		db_record.update({"post": post_wash(str(obj.get_text().strip()))})
+		bs0bj = bs0bj.find("div",{"class":"view-wrap"})\
+						.find("article",{"itemprop":"articleBody"})
+
+		obj = bs0bj.find("h1",{"itemprop":"headline"})
+		db_record.update({"title": obj.get_text().strip()})
+
+		if bs0bj.find("span",{"class":"hidden-xs"}) != None:
+			obj = bs0bj.find("span",{"class":"hidden-xs"})
+			if obj.get_text().strip() != "":
+				db_record.update({"class":obj.get_text().strip()})
+
+		obj = bs0bj.find("span",{"itemprop":"datePublished"})
+		date = obj.attrs["content"].split("KST")[0] + " " + obj.attrs["content"].split("KST")[1]
+		db_record.update({"date": date})
+
+		try:
+			obj = bs0bj.find("div",{"itemprop":"description"})
+			db_record.update({"post": post_wash(str(obj.get_text().strip()))})
+		except:
+			db_record.update({"post": 1})
 	except:
-		db_record.update({"post": 1})
+		error_logging(url, "[3.3] Post crawling fail")
+		return None
 	return db_record

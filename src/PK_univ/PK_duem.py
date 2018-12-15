@@ -5,6 +5,7 @@ from PK_global import startdate_dict
 from tag import tagging
 from recent_date import get_recent_date
 from post_wash import post_wash
+from elog import error_logging
 
 start_datetime = None
 
@@ -21,9 +22,16 @@ def parsing(driver, URL, is_first):
 	print("start_date:" + start_datetime)
 	while True:
 		print('this page is\t| '+ URL['info'] + ' |\t' + str(page))
-		bs0bj = BeautifulSoup(driver.read(), "html.parser")
-		bs0bj = bs0bj.find("div",{"id":"board_box"}).find("ul",{"id":"board_list"})
-
+		try:
+			bs0bj = BeautifulSoup(driver.read(), "html.parser")
+		except:
+			error_logging(URL['info'], "[2.1] Page crawling fail")
+			break
+		try:
+			bs0bj = bs0bj.find("div",{"id":"board_box"}).find("ul",{"id":"board_list"})
+		except:
+			error_logging(URL['info'], "[2.2] Page crawling fail")
+			break
 		# first 크롤링일 경우 그냥 진행
 		if is_first == True:
 			db_docs = list_parse(bs0bj, URL, page)
@@ -46,6 +54,9 @@ def parsing(driver, URL, is_first):
 				break
 			page += 1
 			driver = URLparser(URL['url'] + "&pageIndex=" + str(page))
+			if driver == None: 
+				error_logging(URL['info'], "[2.3] Page crawling fail")
+				break
 
 	# 최근 날짜가 갱신되었다면 db에도 갱신
 	if recent_date != None:
@@ -55,7 +66,12 @@ def parsing(driver, URL, is_first):
 
 def list_parse(bs0bj, URL, page, latest_datetime = None):
 	db_docs = []
-	post_list = bs0bj.findAll("li")
+	try:
+		post_list = bs0bj.findAll("li")
+	except:
+		error_logging(URL['info'], "[3] Post crawling fail")
+		return db_doc
+
 	domain = URL['url'].split('/')[0] + '//' + URL['url'].split('/')[2]
 
 	for post in  post_list:
@@ -64,8 +80,9 @@ def list_parse(bs0bj, URL, page, latest_datetime = None):
 			obj = post.find("a").attrs['href']
 		except Exception as e:
 			return db_docs
-		
-		db_record.update(content_parse(domain + obj))
+		db_rec = content_parse(domain + obj)
+		if db_rec == None: continue
+		db_record.update(db_rec)
 		db_record.update(tagging(URL, db_record['title']))
 
 		print(db_record['date'])
@@ -86,20 +103,32 @@ def list_parse(bs0bj, URL, page, latest_datetime = None):
 def content_parse(url):
 	db_record = {}
 	html = URLparser(url)
-	bs0bj = BeautifulSoup(html.read(), "html.parser")
-	bs0bj = bs0bj.find("div",{"id":"board_view"})
-	db_record.update({"url":url})
-
-	obj = bs0bj.find("h3").get_text().strip()
-	db_record.update({"title":obj})
-
-	obj = bs0bj.find("p",{"class":"writer"}).find("strong").get_text().strip()
-	db_record.update({"date":obj})
+	if html == None:
+		error_logging(url, "[3.1] Post crawling fail")
+		return None
+	try:
+		bs0bj = BeautifulSoup(html.read(), "html.parser")
+	except:
+		error_logging(url, "[3.2] Post crawling fail")
+		return None
 
 	try:
-		obj = bs0bj.find("div",{"class":"board_stance"}).get_text().strip()
-		db_record.update({"post":post_wash(obj)})
+		bs0bj = bs0bj.find("div",{"id":"board_view"})
+		db_record.update({"url":url})
+
+		obj = bs0bj.find("h3").get_text().strip()
+		db_record.update({"title":obj})
+
+		obj = bs0bj.find("p",{"class":"writer"}).find("strong").get_text().strip()
+		db_record.update({"date":obj})
+
+		try:
+			obj = bs0bj.find("div",{"class":"board_stance"}).get_text().strip()
+			db_record.update({"post":post_wash(obj)})
+		except:
+			db_record.update({"post":1})
 	except:
-		db_record.update({"post":1})
+		error_logging(url, "[3.3] Post crawling fail")
+		return None
 
 	return db_record

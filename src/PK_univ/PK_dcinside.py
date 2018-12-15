@@ -6,6 +6,7 @@ from tag import tagging
 from post_wash import post_wash
 import time
 from recent_date import get_recent_date
+from elog import error_logging
 
 def parsing(driver, URL, is_first):
 	if is_first == False:
@@ -18,8 +19,17 @@ def parsing(driver, URL, is_first):
 		bs0bj = BeautifulSoup(driver.read(), "lxml")
 		if bs0bj == None:
 			driver = URLparser(URL['url'] + "&page=" + str(page))
-			bs0bj = BeautifulSoup(driver.read(), "lxml")
-		bs0bj = bs0bj.find("table",{"class":"gall_list"}).find("tbody")
+			if driver == None: break
+			try:
+				bs0bj = BeautifulSoup(driver.read(), "lxml")
+			except:
+				error_logging(URL['info'], "[2.1] Page crawling fail")
+				break
+		try:
+			bs0bj = bs0bj.find("table",{"class":"gall_list"}).find("tbody")
+		except:
+			error_logging(URL['info'], "[2.2] Page crawling fail")
+			break
 
 		# first 크롤링일 경우 그냥 진행
 		if is_first == True:
@@ -43,6 +53,9 @@ def parsing(driver, URL, is_first):
 			print("addOK : " + str(addok))
 			page += 1
 			driver = URLparser(URL['url'] + "&page=" + str(page))
+			if driver == None: 
+				error_logging(URL['info'], "[2.3] Page crawling fail")
+				break
 			time.sleep(2)
 
 	# 최근 날짜가 갱신되었다면 db에도 갱신
@@ -55,19 +68,30 @@ def list_parse(bs0bj, URL, page, latest_datetime = None):
 	target = URL['info'].split('_')[1]
 	start_datetime = startdate_dict[target]
 	db_docs = []
-	post_list = bs0bj.findAll("tr")
+	try:
+		post_list = bs0bj.findAll("tr")
+	except:
+		error_logging(URL['info'], "[3] Post crawling fail")
+		return db_docs
+
 	domain = URL['url'].split('/')[0] + '//' + URL['url'].split('/')[2]
 
 	for post in post_list[:]:
 		db_record = {}
-		post_name = post.find("td",{"class":"gall_num"}).get_text().strip()
+		try:
+			post_name = post.find("td",{"class":"gall_num"}).get_text().strip()
+		except:
+			continue
 		if  post_name == "이슈" or post_name == "설문" or post_name == "광고":
 			continue
 		try:
 			obj = post.find("a").attrs['href']
 		except Exception as e:
 			return db_docs
-		db_record.update(content_parse(domain + obj))
+		db_rec = content_parse(domain + obj)
+		if db_rec == None:
+			continue
+		db_record.update(db_rec)
 		db_record.update(tagging(URL, db_record['title']))
 
 		print(db_record['date'])
@@ -89,29 +113,34 @@ def list_parse(bs0bj, URL, page, latest_datetime = None):
 
 def content_parse(url):
 	html = URLparser(url)
+	if html == None:
+		error_logging(url, "[3.1] Post crawling fail")
+		return None
 	try:
-		bs0bj = BeautifulSoup(html.read(), "lxml")
+		bs0bj = BeautifulSoup(html.read(), "html.parser")
 	except:
-		print("connect error")
-		bs0bj = BeautifulSoup(html.read(), "lxml")
+		error_logging(url, "[3.2] Post crawling fail")
+		return None
 
-	#bs0bj = bs0bj.find("div",{"class":"view_content_wrap"})
 	db_record = {}
 	db_record.update({"url":url})
-
-	obj = bs0bj.find("h3",{"class":"title ub-word"}).find("span",{"class":"title_subject"}).get_text().strip()
-	db_record.update({"title":obj})
-
-	obj = bs0bj.find("div", {"class":"gall_writer ub-writer"}).find("div",{"class":"fl"})
-	obj = bs0bj.find("span",{"class":"gall_date"}).attrs['title']
-	obj = obj.strip()
-	db_record.update({"date":obj})
-
 	try:
-		obj = bs0bj.find("div",{"class":"gallview_contents"}).find("div",{"style":"overflow:hidden;"})
-		obj = obj.get_text().strip()
-		db_record.update({"post":post_wash(obj)})
+		obj = bs0bj.find("h3",{"class":"title ub-word"}).find("span",{"class":"title_subject"}).get_text().strip()
+		db_record.update({"title":obj})
+
+		obj = bs0bj.find("div", {"class":"gall_writer ub-writer"}).find("div",{"class":"fl"})
+		obj = bs0bj.find("span",{"class":"gall_date"}).attrs['title']
+		obj = obj.strip()
+		db_record.update({"date":obj})
+
+		try:
+			obj = bs0bj.find("div",{"class":"gallview_contents"}).find("div",{"style":"overflow:hidden;"})
+			obj = obj.get_text().strip()
+			db_record.update({"post":post_wash(obj)})
+		except:
+			db_record.update({"post":1})
 	except:
-		db_record.update({"post":1})
+		error_logging(url, "[3.3] Post crawling fail")
+		return None
 
 	return db_record

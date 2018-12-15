@@ -6,6 +6,16 @@ from random import shuffle, randrange
 now = datetime.datetime.now() - datetime.timedelta(days = 14)
 date = now.strftime("%Y-%m-%d %H:%M:%S")
 
+include_coll =["PK_main_notice","PK_main_free","PK_main_openmarket",
+	"PK_main_boarding","PK_main_lost","PK_main_car","PK_pknu_bamboo",
+	"PK_pknu_public","PK_pknu_lost","PK_pknu_free","PK_pknu_twinkle",
+	"PK_pknu_kin","PK_today_today","PK_pknulogin_market",
+	"PK_dorm_notice","PK_dcinside_free", "PK_sh_notice","PK_start_notice"]
+include_tag = ["기타","공지","거래","대나무숲","반짝정원","지식인","장학"]
+priority_tag = []
+	#"컴퓨터공학과","취업","영어","대나무숲"
+exclude_tag = []
+
 db_name = 'pookle'
 ip = 'localhost'
 port = 27017
@@ -81,17 +91,6 @@ def View(db, icoll, itag, ltag, etag):
 
 if __name__ == '__main__':
 	import time
-
-	include_coll =["PK_main_notice","PK_main_free","PK_main_openmarket",
-	"PK_main_boarding","PK_main_lost","PK_main_car","PK_pknu_bamboo",
-	"PK_pknu_public","PK_pknu_lost","PK_pknu_free","PK_pknu_twinkle",
-	"PK_pknu_kin","PK_today_today","PK_pknulogin_market",
-	"PK_dorm_notice","PK_dcinside_free", "PK_sh_notice","PK_start_notice"]
-	include_tag = ["기타","공지","거래","대나무숲","반짝정원","지식인","장학"]
-	priority_tag = []
-	#"컴퓨터공학과","취업","영어","대나무숲"
-	exclude_tag = []
-	
 
 	start_time = time.time()
 	db = db_access()
