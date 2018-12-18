@@ -1,4 +1,4 @@
-from url_parser import URLparser
+from url_parser import URLparser,URLparser_con
 from bs4 import BeautifulSoup
 from db_manager import db_manage
 from PK_global import startdate_dict
@@ -12,10 +12,16 @@ def parsing(driver, URL, is_first):
 		latest_datetime = db_manage("get_recent", URL['info'])
 	recent_date = None
 	page = 0
+	target = URL['info'].split('_')[1]
+	if target == "stat" or target == "math":
+		driver = URLparser_con(URL['url'],"utf-8")
+	elif target == "nursing":
+		driver = URLparser_con(URL['url'],"euc-kr")
+
 	while True:
 		print('this page is\t| '+ URL['info'] + ' |\t' + str(page))
 		try:
-			bs0bj = BeautifulSoup(driver.read(), "html.parser")
+			bs0bj = BeautifulSoup(driver, "html.parser")
 			bs0bj = bs0bj.find("table",{"class":"board_list"}).find("tbody")
 		except:
 			error_logging(URL['info'], "[2.1] Page crawling fail")
@@ -41,6 +47,10 @@ def parsing(driver, URL, is_first):
 				break
 			page += 1
 			driver = URLparser(URL['url'] + "&page=" + str(page))
+			if target == "stat" or target == "math":
+				driver = URLparser_con(URL['url'] + "&page=" + str(page),"utf-8")
+			elif target == "nursing":
+				driver = URLparser_con(URL['url'] + "&page=" + str(page),"euc-kr")
 			if driver == None: 
 				error_logging(URL['info'], "[2.2] Page crawling fail")
 				break
@@ -69,13 +79,13 @@ def list_parse(bs0bj, URL, page, latest_datetime = None):
 			obj = post.attrs['href']
 		except Exception as e:
 			return db_docs
-		db_rec = content_parse(domain + obj)
+		db_rec = content_parse(domain + obj, target)
 		if db_rec == None: continue
 		db_record.update(db_rec)
 		# 태그 생성
 		db_record.update(tagging(URL, db_record['title']))
 
-		print(db_record['date'])
+		print(db_record['date'], db_record['title'])
 		# first 파싱이고 해당 글의 시간 조건이 맞을 때
 		if db_record['date'] >= start_datetime  and \
 				latest_datetime == None:
@@ -90,13 +100,18 @@ def list_parse(bs0bj, URL, page, latest_datetime = None):
 	return db_docs
 
 
-def content_parse(url):
+def content_parse(url, target):
 	html = URLparser(url)
+	if target == "stat" or target == "math":
+		html = URLparser_con(url,"utf-8")
+	elif target == "nursing":
+		html = URLparser_con(url,"euc-kr")
+
 	if html == None:
 		error_logging(url, "[3.1] Post crawling fail")
 		return None
 	try:
-		bs0bj = BeautifulSoup(html.read(), "html.parser")
+		bs0bj = BeautifulSoup(html, "html.parser")
 	except:
 		error_logging(url, "[3.2] Post crawling fail")
 		return None

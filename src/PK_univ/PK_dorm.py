@@ -1,4 +1,4 @@
-from url_parser import URLparser
+from url_parser import URLparser, URLparser_con
 from bs4 import BeautifulSoup
 from db_manager import db_manage
 from PK_global import startdate_dict
@@ -13,10 +13,11 @@ def parsing(driver, URL, is_first):
 		latest_datetime = db_manage("get_recent", URL['info'])
 	recent_date = None
 	page = 1
+	driver = URLparser_con(URL['url'],'utf-8')
 	while True:
 		print('this page is\t| '+ URL['info'] + ' |\t' + str(page))
 		try:
-			bs0bj = BeautifulSoup(driver.read(), "html.parser")
+			bs0bj = BeautifulSoup(driver, "html.parser")
 			bs0bj = bs0bj.find("table",{"class":"board_list"}).find("tbody")
 		except:
 			error_logging(URL['info'], "[2.1] Page crawling fail")
@@ -42,7 +43,7 @@ def parsing(driver, URL, is_first):
 			print("addOK : " + str(addok))
 			if addok == 0:
 				break
-			driver = URLparser(URL['url'] + "?page=" + str(page))
+			driver = URLparser_con(URL['url'] + "?page=" + str(page),'utf-8')
 			if driver == None: 
 				error_logging(URL['info'], "[2.2] Page crawling fail")
 				break
@@ -86,7 +87,7 @@ def list_parse(bs0bj, URL, page, latest_datetime = None):
 		# 태그 생성
 		db_record.update(tagging(URL, db_record['title']))
 
-		print(db_record['date'])
+		print(db_record['date'], db_record['title'])
 		# first 파싱이고 해당 글의 시간 조건이 맞을 때
 		if (db_record['date'] >= start_datetime or \
 					post.find("td").get_text().strip() == "")\
@@ -105,12 +106,12 @@ def list_parse(bs0bj, URL, page, latest_datetime = None):
 
 
 def content_parse(domain, url):
-	html = URLparser(url)
+	html = URLparser_con(url,'utf-8')
 	if html == None:
 		error_logging(url, "[3.1] Post crawling fail")
 		return None
 	try:
-		bs0bj = BeautifulSoup(html.read(), "html.parser")
+		bs0bj = BeautifulSoup(html, "html.parser")
 	except:
 		error_logging(url, "[3.2] Post crawling fail")
 		return None

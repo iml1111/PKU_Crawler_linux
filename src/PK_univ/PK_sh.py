@@ -15,7 +15,7 @@ def parsing(driver, URL, is_first):
 	while True:
 		print('this page is\t| '+ URL['info'] + ' |\t' + str(page))
 		try:
-			bs0bj = BeautifulSoup(driver.read(), "html.parser")
+			bs0bj = BeautifulSoup(driver, "html.parser")
 			bs0bj = bs0bj.find("div",{"class":"tbl_head01 tbl_wrap"}).find('tbody')
 		except:
 			error_logging(URL['info'], "[2.1] Page crawling fail")
@@ -76,7 +76,7 @@ def list_parse(bs0bj, URL, page, latest_datetime = None):
 		db_record.update(db_rec)
 		db_record.update(tagging(URL, db_record['title']))
 
-		print(db_record['date'])
+		print(db_record['date'], db_record['title'])
 		# first 파싱이고 해당 글의 시간 조건이 맞을 때
 		if db_record['date'] >= start_datetime  and \
 				latest_datetime == None:
@@ -98,7 +98,7 @@ def content_parse(url):
 		error_logging(url, "[3.1] Post crawling fail")
 		return None
 	try:
-		bs0bj = BeautifulSoup(html.read(), "html.parser").find("article",{"id":"bo_v"})
+		bs0bj = BeautifulSoup(html, "html.parser").find("article",{"id":"bo_v"})
 	except:
 		error_logging(url, "[3.2] Post crawling fail")
 		return None

@@ -14,7 +14,7 @@ def parsing(driver, URL, is_first):
 	while True:
 		print('this page is\t| '+ URL['info'] + ' |\t' + str(page))
 		try:
-			bs0bj = BeautifulSoup(driver.read(), "html.parser")
+			bs0bj = BeautifulSoup(driver, "html.parser")
 			bs0bj = bs0bj.find("ul",{"class":"list-body"})
 		except:
 			error_logging(URL['info'], "[2.1] Page crawling fail")
