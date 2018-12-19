@@ -88,7 +88,7 @@ if __name__ == '__main__':
 
 	start_time = time.time()
 	db = db_access()
-	List =View(db, include_coll[2], include_tag[2], exclude_tag)
+	List =View(db, include_coll[4], include_tag[4], exclude_tag)
 	end_time = time.time() - start_time
 
 	for i in range(10):
