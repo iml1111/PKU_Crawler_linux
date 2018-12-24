@@ -46,6 +46,7 @@ def tagging(URL, title):
 
 	elif url[1] == "pknulogin":
 		if url[2] == 'market':
+			tag_list.append("부경인")
 			tag_list.append("거래")
 			
 	elif url[1] == "dorm":

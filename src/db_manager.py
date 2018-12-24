@@ -5,7 +5,9 @@ from recent_date import get_default_day
 # 디버깅을 위한 코드, 추후에 전체 수정 필요
 t = datetime.datetime.now()
 filter_list = ["페미","냄져","한남","자댕이",'조팔',"씨발",'섹스','개년','개새끼',
-'씹새끼','셋스','느개비','보지','좆','운지','노무현']
+'씹','셋스','느개비','좆','노무현',"느개비",'느금마','니애미','빠구리','시발년'
+,'시발새끼','느그앰','느그미','노무혐','빠9리','시발롬','시발련','창년','보빨러','사까시'
+,'걸레년','걸레련']
 
 #확장 필요
 db_name = 'pookle'
@@ -33,10 +35,15 @@ def db_manage(mode, coll_name = None, doc = None, is_first = None):
 					break
 
 			for j in filter_list:
-				if i["title"].find(j) != -1 or (i["post"] is str and i['post'].find(j) != -1):
-					print("부적합 게시물: ",i['title'])
+				if i["title"].find(j) != -1:
+					print("부적합 게시물: ",i['title'],":", j)
 					cnt = 1
 					break
+				elif i["post"] != 0 and  i["post"] != 1 :
+					if i['post'].find(j) != -1:
+						print("부적합 게시물: ",i['title'],":", j)
+						cnt = 1
+						break
 
 			if cnt == 0:
 				# i 변수가 하나의 게시물

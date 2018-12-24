@@ -14,7 +14,7 @@ from elog import start_error_logging
 
 #for Debug
 target = "PK_univ"
-URL = List[:] 
+URL = List[31:] 
 
 
 if __name__ == '__main__':
