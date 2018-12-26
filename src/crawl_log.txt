@@ -18,3 +18,4 @@
 ------2018-12-24 18:29:32 Crawling Start.------
 2018-12-24 18:29:46 : [http://gall.dcinside.com/board/view/?id=pknu&no=284252&page=2] : [3.2] Post crawling fail
 ------2018-12-24 18:30:23 Crawling Start.------
+------2018-12-26 14:44:13 Crawling Start.------

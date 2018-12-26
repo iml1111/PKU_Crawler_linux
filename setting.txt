@@ -1,4 +1,4 @@
-server
+server @@@@@@@@@@@@@@@
 
 pip install uwsgi
 
@@ -16,9 +16,11 @@ my_nginx.conf 준비
 /etc/nginx/sites-enabled/ 에 링크 혹은 복사
 sudo /etc/init.d/nginx restart
 
-db
+uwsgi --ini wsgi.ini
+
+db@@@@@@@@@@
 
 apt-get install mongodb
 cd / & mkdir data & cd /data & mkdir db
-mongod
+mongod --config mongod.cfg
 mongo

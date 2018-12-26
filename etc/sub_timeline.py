@@ -3,7 +3,7 @@ import datetime
 from operator import itemgetter
 from random import shuffle, randrange
 
-now = datetime.datetime.now() - datetime.timedelta(days = 15)
+now = datetime.datetime.now() - datetime.timedelta(days = 14)
 date = now.strftime("%Y-%m-%d %H:%M:%S")
 
 include_coll = [
@@ -80,6 +80,14 @@ def View(db, icoll, itag, etag):
 			fav_cnt += 1
 		elif any(result[i]["_id"] == j["_id"] for j in result[0:i]):
 			del result[i]
+	#광고사이에 껴넣기
+	index = 10
+	ad_list = list(db['advertise'].find())
+	shuffle(ad_list)
+	for ad in ad_list:
+		result.insert(index, ad)
+		index += 11
+
 	return result
 
 
@@ -91,7 +99,7 @@ if __name__ == '__main__':
 	List =View(db, include_coll[4], include_tag[4], exclude_tag)
 	end_time = time.time() - start_time
 
-	for i in range(10):
+	for i in range(20):
 		print(List[i]['title'])
 		print(List[i]['tag'])
 		print(List[i]['date'])
