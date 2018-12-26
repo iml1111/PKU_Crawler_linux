@@ -105,7 +105,7 @@ if __name__ == '__main__':
 	List =View(db, include_coll, include_tag, priority_tag, exclude_tag)
 	end_time = time.time() - start_time
 
-	for i in range(20):
+	for i in range(10):
 		try:
 			print(List[i]['title'])
 			print(List[i]['tag'])

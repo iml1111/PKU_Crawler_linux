@@ -2,12 +2,14 @@ import pymongo
 import os
 import datetime
 from recent_date import get_default_day
+from filter import slang_filter
 # 디버깅을 위한 코드, 추후에 전체 수정 필요
 t = datetime.datetime.now()
 filter_list = ["페미","냄져","한남","자댕이",'조팔',"씨발",'섹스','개년','개새끼',
 '씹','셋스','느개비','좆','노무현',"느개비",'느금마','니애미','빠구리','시발년'
 ,'시발새끼','느그앰','느그미','노무혐','빠9리','시발롬','시발련','창년','보빨러','사까시'
-,'걸레년','걸레련']
+,'걸레년','걸레련','보빨','4카시','사카시','봊','보전깨','니미','오피누','오피녀','고무통'
+,'이기야','놈딱','북딱']
 
 #확장 필요
 db_name = 'pookle'
@@ -44,6 +46,10 @@ def db_manage(mode, coll_name = None, doc = None, is_first = None):
 						print("부적합 게시물: ",i['title'],":", j)
 						cnt = 1
 						break
+
+			if '디시인사이드' in i['tag'] and slang_filter(i['title'] + i['post']):
+				print("부적합 게시물2: ",i['title'],":")
+				cnt = 1
 
 			if cnt == 0:
 				# i 변수가 하나의 게시물

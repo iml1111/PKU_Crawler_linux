@@ -19,3 +19,10 @@
 2018-12-24 18:29:46 : [http://gall.dcinside.com/board/view/?id=pknu&no=284252&page=2] : [3.2] Post crawling fail
 ------2018-12-24 18:30:23 Crawling Start.------
 ------2018-12-26 14:44:13 Crawling Start.------
+------2018-12-26 17:02:50 Crawling Start.------
+2018-12-26 17:02:56 : [http://gall.dcinside.com/board/view/?id=pknu&no=284429&page=1] : [3.2] Post crawling fail
+2018-12-26 17:02:56 : [http://gall.dcinside.com/board/view/?id=pknu&no=284427&page=1] : [3.2] Post crawling fail
+------2018-12-26 17:03:02 Crawling Start.------
+------2018-12-26 17:05:31 Crawling Start.------
+2018-12-26 17:05:35 : [http://gall.dcinside.com/board/view/?id=pknu&no=284438&page=1] : [3.2] Post crawling fail
+------2018-12-26 17:05:46 Crawling Start.------
