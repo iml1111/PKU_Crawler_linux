@@ -5,6 +5,8 @@ from random import shuffle, randrange
 
 now = datetime.datetime.now() - datetime.timedelta(days = 10)
 date = now.strftime("%Y-%m-%d %H:%M:%S")
+now2 = datetime.datetime.now() - datetime.timedelta(days = 20)
+date2 = now2.strftime("%Y-%m-%d %H:%M:%S")
 
 include_coll =["PK_main_notice","PK_main_free","PK_main_openmarket",
 	"PK_main_boarding","PK_main_lost","PK_main_car","PK_pknu_bamboo",
@@ -12,7 +14,7 @@ include_coll =["PK_main_notice","PK_main_free","PK_main_openmarket",
 	"PK_pknu_kin","PK_today_today","PK_pknulogin_market",
 	"PK_dorm_notice","PK_dcinside_free", "PK_sh_notice","PK_start_notice"]
 include_tag = ["기타","공지","거래","대나무숲","반짝정원","지식인","장학"]
-priority_tag = []
+priority_tag = ["일어일문학부"]
 	#"컴퓨터공학과","취업","영어","대나무숲"
 exclude_tag = []
 
@@ -44,7 +46,7 @@ def View(db, icoll, itag, ltag, etag):
 		else:
 			coll_list = list(db[col].find(
 														{"$and":[
-																{"date":{"$gt":date}},
+																{"date":{"$gt":date2}},
 																{"tag":{ "$in":ltag }},	
 																{"tag":{"$nin":etag }},				
 															]
@@ -71,20 +73,19 @@ def View(db, icoll, itag, ltag, etag):
 		elif any(result[i]["_id"] == j["_id"] for j in result[0:i]):
 			del result[i]
 	#관심 태그가 아예 없을 때
-	if len(ltag) == 0:
-		for i in range(len(result)-4):
-			if i >= len(result)-4:
-				break
-			while(i < len(result)-3 and "디시인사이드" in result[i]['tag'] and\
-			"디시인사이드" in result[i + 1]['tag'] and\
-			"디시인사이드" in result[i + 2]['tag']):
-				delete_list = sorted(result[i:i+3],key=itemgetter("fav_cnt","view","date"))
-				if delete_list[0]['title'] == result[i]['title']:
-					del result[i]
-				elif delete_list[0]['title'] == result[i+1]['title']:
-					del result[i+1]
-				elif delete_list[0]['title'] == result[i+2]['title']:
-					del result[i+2]
+	for i in range(len(result)-4):
+		if i >= len(result)-4:
+			break
+		while(i < len(result)-3 and "디시인사이드" in result[i]['tag'] and\
+		"디시인사이드" in result[i + 1]['tag'] and\
+		"디시인사이드" in result[i + 2]['tag']):
+			delete_list = sorted(result[i:i+3],key=itemgetter("fav_cnt","view","date"))
+			if delete_list[0]['title'] == result[i]['title']:
+				del result[i]
+			elif delete_list[0]['title'] == result[i+1]['title']:
+				del result[i+1]
+			elif delete_list[0]['title'] == result[i+2]['title']:
+				del result[i+2]
 	
 	#광고사이에 껴넣기
 	index = 10

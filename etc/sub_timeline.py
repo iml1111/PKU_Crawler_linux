@@ -96,10 +96,10 @@ if __name__ == '__main__':
 
 	start_time = time.time()
 	db = db_access()
-	List =View(db, include_coll[4], include_tag[4], exclude_tag)
+	List =View(db, include_coll[3], include_tag[3], exclude_tag)
 	end_time = time.time() - start_time
 
-	for i in range(20):
+	for i in range(10):
 		print(List[i]['title'])
 		print(List[i]['tag'])
 		print(List[i]['date'])
