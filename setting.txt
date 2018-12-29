@@ -1,4 +1,4 @@
-server @@@@@@@@@@@@@@@
+backend server @@@@@@@@@@@@@@@
 
 pip install uwsgi
 
@@ -18,9 +18,23 @@ sudo /etc/init.d/nginx restart
 
 uwsgi --ini wsgi.ini
 
+frontend server @@@@@@@@@@@@@@@@@@@
+apt-get install tomcat8
+apt-get install tomcat8-docs tomcat8-examples tomcat8-admin
+service tomcat8 start
+angular dist 준비
+ROOT 디렉터리에 배포
+
+
 db@@@@@@@@@@
 
 apt-get install mongodb
 cd / & mkdir data & cd /data & mkdir db
 mongod --config mongod.cfg
 mongo
+
+crawler @@@@@@@@@@@@@
+iml_global 크롤러 위치 수정
+elog 위치 수정
+crontab -e
+30 */4 * * * python3 ###
