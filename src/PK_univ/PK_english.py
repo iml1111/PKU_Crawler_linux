@@ -4,7 +4,6 @@ from db_manager import db_manage
 from PK_global import startdate_dict
 from tag import tagging
 from recent_date import get_recent_date
-from post_wash import post_wash
 from elog import error_logging
 
 def parsing(driver, URL, is_first):
@@ -150,7 +149,7 @@ def content_parse2(url):
 		db_record.update({"date":obj})
 
 		obj = bs0bj.find("div",{"class":"boardReadBody"}).get_text().strip()
-		db_record.update({"post":post_wash(obj)})
+		db_record.update({"post":obj})
 	except:
 		error_logging(url, "[3.3] Post crawling fail")
 		return None

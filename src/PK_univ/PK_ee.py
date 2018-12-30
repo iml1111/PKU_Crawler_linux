@@ -4,7 +4,6 @@ from db_manager import db_manage
 from PK_global import startdate_dict
 from tag import tagging
 from recent_date import get_recent_date
-from post_wash import post_wash
 from elog import error_logging
 
 def parsing(driver, URL, is_first):
@@ -114,7 +113,7 @@ def content_parse(url):
 
 		try:
 			obj = bs0bj.find("td",{"class":"text12graylight", "align":"left", "valign":"top"}).get_text().strip()
-			db_record.update({"post":post_wash(obj)})
+			db_record.update({"post":obj})
 		except:
 			db_record.update({"post":1})
 	except:

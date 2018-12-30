@@ -5,7 +5,7 @@ def post_wash(text):
 			continue
 		if text[i] == '\\' and (text[i+1] == 'n' or text[i+1] == 'r'):
 			continue
-		elif (text[i] == 'n' or text[i] == 'r') or text[i-1] == '\\':
+		elif (text[i] == 'n' or text[i] == 'r') and text[i-1] == '\\':
 			continue
 		data = data + text[i]
 

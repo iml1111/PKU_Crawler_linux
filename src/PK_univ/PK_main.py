@@ -2,7 +2,6 @@ from url_parser import URLparser
 from db_manager import db_manage
 from PK_global import startdate_dict
 from tag import tagging
-from post_wash import post_wash
 from recent_date import get_recent_date
 from elog import error_logging
 from bs4 import BeautifulSoup
@@ -126,7 +125,7 @@ def content_parse(domain, url):
 
 		try:
 			obj = bs0bj.find("div",{'class':"bbs-body"})
-			db_record.update({"post":post_wash(str(obj.get_text().strip()))})
+			db_record.update({"post":obj.get_text().strip()})
 		except:
 			db_record.update({"post":1})
 	except:

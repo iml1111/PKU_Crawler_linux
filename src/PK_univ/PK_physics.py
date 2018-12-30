@@ -128,7 +128,7 @@ def content_parse(url, target):
 
 		try:
 			obj = bs0bj.find("td",{"class":"tdc"}).get_text().strip()
-			db_record.update({"post":post_wash(obj)})
+			db_record.update({"post":obj})
 		except:
 			db_record.update({"post":1})
 	except:

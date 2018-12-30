@@ -3,7 +3,6 @@ from bs4 import BeautifulSoup
 from db_manager import db_manage
 from PK_global import startdate_dict
 from tag import tagging
-from post_wash import post_wash
 from recent_date import get_recent_date
 from elog import error_logging
 
@@ -130,7 +129,7 @@ def content_parse(domain, url):
 		try:
 			obj = bs0bj.find("tbody").find("td",{"class":"tdc"})
 			obj = obj.get_text().strip()
-			db_record.update({"post":post_wash(str(obj))})
+			db_record.update({"post":obj})
 		except:
 			db_record.update({"post":1})
 	except:
