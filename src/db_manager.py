@@ -59,7 +59,8 @@ def db_manage(mode, coll_name = None, doc = None, is_first = None):
 				i.update({"fav_cnt":0})
 				i.update({"view":0})
 				addok += 1
-				i['post'] = post_wash(i['post'])
+				if  i["post"] != 0 and  i["post"] != 1:
+					i['post'] = post_wash(i['post'])
 				coll.insert(i)
 			else:
 				continue
