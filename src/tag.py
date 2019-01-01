@@ -321,7 +321,8 @@ def tag_public(url, title, tag_list):
 		tag_list.append("교육&설명회")
 
 	if title.find("수강") != -1 or title.find("K-MOOC") != -1\
-	or title.find("강좌") != -1:
+	or title.find("강좌") != -1 or title.find("kmooc") != -1 \
+	or title.find("Kmooc") != -1 or title.find("케이묵") != -1:
 		tag_list.append("수강")
 
 	if title.find("세미나") != -1:

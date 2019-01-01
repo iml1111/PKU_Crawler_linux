@@ -109,20 +109,20 @@ def content_parse1(url):
 		return None
 	db_record = {}
 	db_record.update({"url":url})
-	try:
-		obj = bs0bj.find("div",{"class":"read_header"}).h1.a.findNext('a')
+	#try:
+	obj = bs0bj.find("div",{"class":"read_header"}).h1.a.findNext('a')
 		
-		db_record.update({"title":obj.get_text().strip()})
+	db_record.update({"title":obj.get_text().strip()})
 
-		obj = obj.findNext("span",{"class":"time"}).get_text().strip()
-		obj = obj.replace(".","-")
-		db_record.update({"date":obj})
+	obj = obj.findNext("span",{"class":"time"}).get_text().strip()
+	obj = obj.replace(".","-")
+	db_record.update({"date":obj})
 
-		obj = bs0bj.find("div",{"class":"read_body"}).get_text().strip()
-		db_record.update({"post":post_wash(obj)})
-	except:
-		error_logging(url, "[3.3] Post crawling fail")
-		return None
+	obj = bs0bj.find("div",{"class":"read_body"}).get_text().strip()
+	db_record.update({"post":obj})
+	#except:
+	#	error_logging(url, "[3.3] Post crawling fail")
+	#	return None
 
 	return db_record
 

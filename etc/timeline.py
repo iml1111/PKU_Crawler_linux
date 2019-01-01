@@ -14,7 +14,7 @@ include_coll =["PK_main_notice","PK_main_free","PK_main_openmarket",
 	"PK_pknu_kin","PK_today_today","PK_pknulogin_market",
 	"PK_dorm_notice","PK_dcinside_free", "PK_sh_notice","PK_start_notice"]
 include_tag = ["기타","공지","거래","대나무숲","반짝정원","지식인","장학"]
-priority_tag = ["일어일문학부"]
+priority_tag = []
 	#"컴퓨터공학과","취업","영어","대나무숲"
 exclude_tag = []
 
@@ -77,15 +77,12 @@ def View(db, icoll, itag, ltag, etag):
 		if i >= len(result)-4:
 			break
 		while(i < len(result)-3 and "디시인사이드" in result[i]['tag'] and\
-		"디시인사이드" in result[i + 1]['tag'] and\
-		"디시인사이드" in result[i + 2]['tag']):
-			delete_list = sorted(result[i:i+3],key=itemgetter("fav_cnt","view","date"))
+		"디시인사이드" in result[i + 1]['tag']):
+			delete_list = sorted(result[i:i+2],key=itemgetter("fav_cnt","view","date"))
 			if delete_list[0]['title'] == result[i]['title']:
 				del result[i]
 			elif delete_list[0]['title'] == result[i+1]['title']:
 				del result[i+1]
-			elif delete_list[0]['title'] == result[i+2]['title']:
-				del result[i+2]
 	
 	#광고사이에 껴넣기
 	index = 10
@@ -106,7 +103,7 @@ if __name__ == '__main__':
 	List =View(db, include_coll, include_tag, priority_tag, exclude_tag)
 	end_time = time.time() - start_time
 
-	for i in range(10):
+	for i in range(300):
 		try:
 			print(List[i]['title'])
 			print(List[i]['tag'])
