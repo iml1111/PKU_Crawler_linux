@@ -3,6 +3,7 @@ import os
 import datetime
 from recent_date import get_default_day
 from filter import slang_filter
+from post_wash import post_wash
 # 디버깅을 위한 코드, 추후에 전체 수정 필요
 t = datetime.datetime.now()
 filter_list = ["페미","냄져","한남","자댕이",'조팔',"씨발",'섹스','개년','개새끼',
@@ -58,6 +59,7 @@ def db_manage(mode, coll_name = None, doc = None, is_first = None):
 				i.update({"fav_cnt":0})
 				i.update({"view":0})
 				addok += 1
+				i['post'] = post_wash(i['post'])
 				coll.insert(i)
 			else:
 				continue
