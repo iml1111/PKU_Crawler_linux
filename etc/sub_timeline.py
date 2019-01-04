@@ -5,6 +5,11 @@ from random import shuffle, randrange
 
 now = datetime.datetime.now() - datetime.timedelta(days = 14)
 date = now.strftime("%Y-%m-%d %H:%M:%S")
+now2 = datetime.datetime.now() - datetime.timedelta(days = 31)
+date2 = now.strftime("%Y-%m-%d %H:%M:%S")
+
+fav_cut = 15
+view_cut = 50
 
 include_coll = [
 	#메인
@@ -66,8 +71,34 @@ def View(db, icoll, itag, etag):
 													}))
 		#2달이내의 글만 갖고옴
 		result += coll_list
+	if len(result) <= 40:
+		result = []
+		for col in db.collection_names():
+			if any(icol in col for icol in icoll) == False:
+				continue
+			#메인타임라인의 경우 타학과공지 제외
+			coll_list = list(db[col].find(
+														{"$and":[
+																{"tag":{ "$in": itag }},	
+																{"tag":{"$nin":etag }},
+																{"date":{"$gt":date2}}
+															]
+														}))
+			#2달이내의 글만 갖고옴
+			result += coll_list	
 
-	fav_list = sorted(result, key=itemgetter("fav_cnt","view","date"), reverse = True)
+		for post in result:
+			if post['fav_cnt'] < fav_cut:
+				post.update({"fav_cnt2":0})
+			else:
+				post.update({"fav_cnt2":post['fav_cnt']})
+
+			if post['view'] < view_cut:
+				post.update({"view2":0})
+			else:
+				post.update({"view2":post['view']})
+
+	fav_list = sorted(result, key=itemgetter("fav_cnt2","view2","date"), reverse = True)
 	shuffle(result)
 	fav_cnt = 0
 

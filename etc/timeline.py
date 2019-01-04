@@ -8,6 +8,9 @@ date = now.strftime("%Y-%m-%d %H:%M:%S")
 now2 = datetime.datetime.now() - datetime.timedelta(days = 20)
 date2 = now2.strftime("%Y-%m-%d %H:%M:%S")
 
+fav_cut = 15
+view_cut = 50
+
 include_coll =["PK_main_notice","PK_main_free","PK_main_openmarket",
 	"PK_main_boarding","PK_main_lost","PK_main_car","PK_pknu_bamboo",
 	"PK_pknu_public","PK_pknu_lost","PK_pknu_free","PK_pknu_twinkle",
@@ -58,15 +61,26 @@ def View(db, icoll, itag, ltag, etag):
 			post.update({"priority":True})
 		else:
 			post.update({"priority":False})
+
+		if post['fav_cnt'] < fav_cut:
+			post.update({"fav_cnt2":0})
+		else:
+			post.update({"fav_cnt2":post['fav_cnt']})
+
+		if post['view'] < view_cut:
+			post.update({"view2":0})
+		else:
+			post.update({"view2":post['view']})
+
 	shuffle(result)
-	fav_list = sorted(result, key=itemgetter("priority","fav_cnt","view"), reverse = True)
+	fav_list = sorted(result, key=itemgetter("priority","fav_cnt2","view2"), reverse = True)
 	shuffle(result)
 	fav_cnt = 0
 
 	for i in range(len(result)):
 		if i >= 240 or fav_cnt >= 80 or i >= len(result):
 			break
-		if randrange(100) <= 60 \
+		if randrange(100) <= 50 \
 		and any(fav_list[fav_cnt] == j["_id"] for j in result[0:i]) == False:
 			result.insert(i, fav_list[fav_cnt])
 			fav_cnt += 1
