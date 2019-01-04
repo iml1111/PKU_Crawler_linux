@@ -87,16 +87,16 @@ def View(db, icoll, itag, etag):
 			#2달이내의 글만 갖고옴
 			result += coll_list	
 
-		for post in result:
-			if post['fav_cnt'] < fav_cut:
-				post.update({"fav_cnt2":0})
-			else:
-				post.update({"fav_cnt2":post['fav_cnt']})
+	for post in result:
+		if post['fav_cnt'] < fav_cut:
+			post.update({"fav_cnt2":0})
+		else:
+			post.update({"fav_cnt2":post['fav_cnt']})
 
-			if post['view'] < view_cut:
-				post.update({"view2":0})
-			else:
-				post.update({"view2":post['view']})
+		if post['view'] < view_cut:
+			post.update({"view2":0})
+		else:
+			post.update({"view2":post['view']})
 
 	fav_list = sorted(result, key=itemgetter("fav_cnt2","view2","date"), reverse = True)
 	shuffle(result)
