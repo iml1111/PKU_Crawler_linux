@@ -36,3 +36,6 @@
 2019-01-01 19:29:49 : [http://english.pknu.ac.kr/ko_notice/46975] : [3.3] Post crawling fail
 2019-01-01 19:29:51 : [http://english.pknu.ac.kr/ko_notice/46968] : [3.3] Post crawling fail
 ------2019-01-01 19:30:09 Crawling Start.------
+------2019-01-10 16:35:20 Crawling Start.------
+------2019-01-10 16:37:28 Crawling Start.------
+------2019-01-10 16:44:22 Crawling Start.------
