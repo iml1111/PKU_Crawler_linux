@@ -80,7 +80,7 @@ def View(db, icoll, itag, ltag, etag):
 	for i in range(len(result)):
 		if i >= 240 or fav_cnt >= 80 or i >= len(result):
 			break
-		if randrange(100) <= 50 \
+		if randrange(100) <= 60 \
 		and any(fav_list[fav_cnt] == j["_id"] for j in result[0:i]) == False:
 			result.insert(i, fav_list[fav_cnt])
 			fav_cnt += 1

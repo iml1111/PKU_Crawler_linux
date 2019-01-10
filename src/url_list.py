@@ -72,11 +72,11 @@ List = (\
 	{'url':"http://startup.pknu.ac.kr/html2015/06comm/06.do",\
 	'info':"PK_start_free"},\
 	# 부경대 디시인사이드 31부터
-	{'url':"http://gall.dcinside.com/board/lists/?id=pknu",\
-	'info':"PK_dcinside_free"},\
-	#부경대 소비자생활협동조합 32부터
-	#{'url':"http://pknucoop.or.kr/pukyong/pukyong0302",\
-	#'info':"PK_coop_notice"},\
+	#{'url':"http://gall.dcinside.com/board/lists/?id=pknu",\
+	#'info':"PK_dcinside_free"},\
+	#부경대 소비자생활협동조합 31부터
+	{'url':"http://pknucoop.or.kr/pukyong/pukyong0302",\
+	'info':"PK_coop_notice"},\
 	#부경대 산학협력단 33부터
 	{'url':"http://sh.pknu.ac.kr/sh/bbs/bbs/board.php?bo_table=b14",\
 	'info':"PK_sh_notice"},\
