@@ -37,4 +37,4 @@ crawler @@@@@@@@@@@@@
 iml_global 크롤러 위치 수정
 elog 위치 수정
 crontab -e
-30 */4 * * * python3 ###
+0 */8 * * * python3 ###

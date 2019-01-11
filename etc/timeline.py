@@ -72,21 +72,29 @@ def View(db, icoll, itag, ltag, etag):
 		else:
 			post.update({"view2":post['view']})
 
-	shuffle(result)
-	fav_list = sorted(result, key=itemgetter("priority","fav_cnt2","view2"), reverse = True)
-	shuffle(result)
+	fav_list = sorted(result, key=itemgetter("priority","fav_cnt2","view2","date"), reverse = True)
+	result = sorted(result, key=itemgetter("date"), reverse = True)
 	fav_cnt = 0
 
 	for i in range(len(result)):
 		if i >= 240 or fav_cnt >= 80 or i >= len(result):
 			break
-		if randrange(100) <= 60 \
+		if randrange(100) <= 50 \
 		and any(fav_list[fav_cnt] == j["_id"] for j in result[0:i]) == False:
 			result.insert(i, fav_list[fav_cnt])
 			fav_cnt += 1
-		elif any(result[i]["_id"] == j["_id"] for j in result[0:i]):
-			del result[i]
-	#관심 태그가 아예 없을 때
+
+	i = 0
+	while(True):
+		if i >= len(result):
+			break
+		for j in range(i + 1, len(result)):
+			if result[i]['_id'] == result[j]['_id']:
+				del result[j]
+				break
+		i += 1
+	#디시 제거 
+	'''
 	for i in range(len(result)-4):
 		if i >= len(result)-4:
 			break
@@ -97,6 +105,7 @@ def View(db, icoll, itag, ltag, etag):
 				del result[i]
 			elif delete_list[0]['title'] == result[i+1]['title']:
 				del result[i+1]
+	'''
 	
 	#광고사이에 껴넣기
 	index = 10
@@ -117,10 +126,11 @@ if __name__ == '__main__':
 	List =View(db, include_coll, include_tag, priority_tag, exclude_tag)
 	end_time = time.time() - start_time
 
-	for i in range(300):
+	for i in range(20):
 		try:
 			print(List[i]['title'])
 			print(List[i]['tag'])
+			print(List[i]['date'])
 			print()
 		except:
 			pass

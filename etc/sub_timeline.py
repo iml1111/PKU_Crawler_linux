@@ -71,6 +71,8 @@ def View(db, icoll, itag, etag):
 													}))
 		#2달이내의 글만 갖고옴
 		result += coll_list
+
+	# 게시글의 총 수가 40개 이하일 경우, 날짜기간을 늘림
 	if len(result) <= 40:
 		result = []
 		for col in db.collection_names():
@@ -99,18 +101,27 @@ def View(db, icoll, itag, etag):
 			post.update({"view2":post['view']})
 
 	fav_list = sorted(result, key=itemgetter("fav_cnt2","view2","date"), reverse = True)
-	shuffle(result)
+	result = sorted(result, key=itemgetter("date"), reverse = True)
 	fav_cnt = 0
 
 	for i in range(len(result)):
-		if i >= 240 or fav_cnt >= 80:
+		if i >= 240 or fav_cnt >= 80 or i >= len(result):
 			break
-		if randrange(100) <= 40 \
+		if randrange(100) <= 50 \
 		and any(fav_list[fav_cnt] == j["_id"] for j in result[0:i]) == False:
 			result.insert(i, fav_list[fav_cnt])
 			fav_cnt += 1
-		elif any(result[i]["_id"] == j["_id"] for j in result[0:i]):
-			del result[i]
+
+	i = 0
+	while(True):
+		if i >= len(result):
+			break
+		for j in range(i + 1, len(result)):
+			if result[i]['_id'] == result[j]['_id']:
+				del result[j]
+				break
+		i += 1
+
 	#광고사이에 껴넣기
 	index = 10
 	ad_list = list(db['advertise'].find())
@@ -127,10 +138,10 @@ if __name__ == '__main__':
 
 	start_time = time.time()
 	db = db_access()
-	List =View(db, include_coll[4], include_tag[4], exclude_tag)
+	List =View(db, include_coll[1], include_tag[1], exclude_tag)
 	end_time = time.time() - start_time
 
-	for i in range(10):
+	for i in range(20):
 		print(List[i]['title'])
 		print(List[i]['tag'])
 		print(List[i]['date'])
