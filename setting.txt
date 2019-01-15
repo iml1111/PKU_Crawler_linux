@@ -16,7 +16,7 @@ my_nginx.conf 준비
 /etc/nginx/sites-enabled/ 에 링크 혹은 복사
 sudo /etc/init.d/nginx restart
 
-uwsgi --ini wsgi.ini
+uwsgi --ini wsgi.ini!
 
 frontend server @@@@@@@@@@@@@@@@@@@
 apt-get install tomcat8
