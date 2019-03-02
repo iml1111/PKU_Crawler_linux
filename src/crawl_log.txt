@@ -1,0 +1,9 @@
+------2019-03-02 20:37:12 Crawling Start.------
+2019-03-02 20:37:12 : [PK_ce_notice] : [2.1] Page crawling fail
+2019-03-02 20:37:12 : [PK_ce_jobinfo] : [2.1] Page crawling fail
+2019-03-02 20:37:12 : [PK_ce_samsungsw] : [2.1] Page crawling fail
+------2019-03-02 20:38:00 Crawling Start.------
+2019-03-02 20:38:00 : [PK_ce_notice] : [2.2] Page crawling fail
+2019-03-02 20:38:00 : [PK_ce_jobinfo] : [2.2] Page crawling fail
+2019-03-02 20:38:00 : [PK_ce_samsungsw] : [2.2] Page crawling fail
+------2019-03-02 20:39:00 Crawling Start.------

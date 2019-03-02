@@ -52,7 +52,7 @@ def Crawling(target, URL, is_first):
 		if select == 'main':
 			PK_main.parsing(driver, URL, is_first)
 		elif select == 'ce':
-			PK_ce.parsing(driver, URL, is_first)
+			PK_duem.parsing(driver, URL, is_first)
 		elif select == 'pknu':
 			PK_pknu.parsing(driver, URL, is_first)
 		elif select == 'today':

@@ -30,15 +30,13 @@ List = (\
 	{'url':"http://cms.pknu.ac.kr/pknujob/view.do?no=2388",\
 	'info':"PK_job_education"},\
 	# 부경대 컴퓨터공학과 14부터
-	{'url':"http://ce.pknu.ac.kr/05_community/01_community.php",\
+	{'url':"http://cms.pknu.ac.kr/ced/view.do?no=11084",\
 	'info':"PK_ce_notice"},\
-	{'url':"http://ce.pknu.ac.kr/05_community/03_community.php",\
+	{'url':"http://cms.pknu.ac.kr/ced/view.do?no=11080",\
 	'info':"PK_ce_jobinfo"},\
-	{'url':"http://ce.pknu.ac.kr/04_samsung/06_samsung.php",\
+	{'url':"http://cms.pknu.ac.kr/ced/view.do?no=11050",\
 	'info':"PK_ce_samsungsw"},\
 	#부경대 컴공 대학원 17부터
-	{'url':"http://ce.pknu.ac.kr/03_uni/04_uni.php",\
-	'info':"PK_ce_graduate"},\
 	# 부경대 커뮤니티(pknu.in) 18부터
 	{'url':"http://pknu.in/bbs/board.php?bo_table=bamboo",\
 	'info':"PK_pknu_bamboo"},\
